@@ -1,0 +1,19 @@
+version: "3.7"
+
+services:
+  liferay:
+    build: ./liferay
+    container_name: liferay-latest
+    restart: unless-stopped
+    volumes:
+      - ./liferay/data:/opt/liferay/data
+    ports:
+      - 8080:8080
+      - 11311:11311
+    
+    deploy:
+      resources:
+        limits:
+          memory: 8GB
+        reservations:
+          memory: 8GB
