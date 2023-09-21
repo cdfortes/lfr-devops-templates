@@ -8,9 +8,14 @@ services:
     volumes:
       - ./liferay/data:/opt/liferay/data
     ports:
-      - 8080:8080
-      - 11311:11311
-    
+      - '8080:8080'
+      - '9000:9000'
+      - '8000:8000'
+      - '11311:11311'
+    environment:
+      - 'LIFERAY_HOME=/opt/liferay'
+      - 'JAVA_OPTS=-Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=8000,suspend=n'
+      - 'LIFERAY_JVM_OPTS: "-Xms2560m -Xmx4096m"'
     deploy:
       resources:
         limits:
