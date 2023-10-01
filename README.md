@@ -1,0 +1,2 @@
+# Liferay Devops templates
+

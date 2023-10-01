@@ -1,0 +1,39 @@
+version: "3.7"
+
+services:
+  liferay:
+    build: ./liferay
+    container_name: liferay-latest
+    restart: unless-stopped
+    depends_on:
+      - mysql
+    volumes:
+      - ./liferay/data:/opt/liferay/data
+    ports:
+      - '8080:8080'
+      - '9000:9000'
+      - '8000:8000'
+      - '11311:11311'
+    environment:
+      - 'LIFERAY_HOME=/opt/liferay'
+      - 'JAVA_OPTS=-Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=8000,suspend=n'
+      - 'LIFERAY_JVM_OPTS: "-Xms2560m -Xmx4096m"'
+  mysql:
+    build: ./mysql
+    container_name: mysql
+    networks:
+      - network-liferay-stack
+    ports:
+      - 3306:3306
+    environment:
+# TODO: Create user liferay
+#      MYSQL_USER: liferay
+#      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_ROOT_HOST: '%' 
+#      MYSQL_ROOT_HOST: *.* 
+    volumes:
+      - mysql:/var/lib/mysql
+networks:
+  network-liferay-stack:
+    name: network-liferay-stack
