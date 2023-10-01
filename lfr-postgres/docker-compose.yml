@@ -1,0 +1,38 @@
+version: "3.7"
+
+services:
+  liferay:
+    build: ./liferay
+    container_name: liferay-latest
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    volumes:
+      - ./liferay/data:/opt/liferay/data
+    ports:
+      - '8080:8080'
+      - '9000:9000'
+      - '8000:8000'
+      - '11311:11311'
+    environment:
+      - 'LIFERAY_HOME=/opt/liferay'
+      - 'JAVA_OPTS=-Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=8000,suspend=n'
+      - 'LIFERAY_JVM_OPTS: "-Xms2560m -Xmx4096m"'
+  postgres:
+    build: ./postgres
+    container_name: postgres
+    networks:
+      - network-liferay-stack
+    ports:
+      - 3306:3306
+    environment:
+# TODO: Create user liferay
+      POSGRESQL_USER: liferay
+      POSGRESQL_ROOT_PASSWORD: secret
+      POSGRESQL_ROOT_HOST: '%' 
+#      POSGRESQL_ROOT_HOST: *.* 
+    volumes:
+      - POSGRESQL:/var/lib/POSGRESQL
+networks:
+  network-liferay-stack:
+    name: network-liferay-stack
